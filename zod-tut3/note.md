@@ -5,19 +5,21 @@
 ```ts
 import { z } from "zod";
 
-const UserSchema = z
-  .object({
-    username: z.string().min(8),
-    password: z.string().min(8),
-    email: z.string().email().endsWith("@gmail.com"),
-    isProgrammer: z.boolean().optional(),
-    age: z.number().optional(),
-    unknown: z.undefined().optional(),
-    unknown2: z.null().optional(),
-    score: z.array(z.number()),
-    response: z.tuple([z.string(), z.number(), z.boolean()]).rest(z.string()),
-  })
-  .partial();
+const UserSchema = z.object({
+  username: z.string().min(8),
+  password: z.string().min(8),
+  email: z.string().email().endsWith("@gmail.com"),
+  isProgrammer: z.boolean().optional(),
+  age: z.number().optional(),
+  unknown: z.undefined().optional(), //this value is always undefined
+  unknown2: z.null().optional(), //this value is always null
+  score: z.array(z.number()),
+  response: z.tuple([z.string(), z.number(), z.boolean()]).rest(z.string()),
+  birthday: z.birthday(),
+  unknown3: z.void(), //this value is returns undefined due to z.void()
+  unknown4: z.unknown(), //this value is unknown
+  unknown5: z.never(), //this value can never be defined
+});
 
 type User = z.infer<typeof UserSchema>;
 
@@ -29,5 +31,5 @@ const user: User = {
   response: ["you are not authorized", 401, false, "fkldajlda"],
 };
 
-console.log(UserSchema.partial().safeParse(user));
+console.log(UserSchema.safeParse(user));
 ```
